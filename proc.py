@@ -10,6 +10,9 @@ class proc:
         self.name = 'default'
         self.pid = 0;
 
+sock_proc = [[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,7],[0,8],[0,9],[0,10]]
+proc_count = 0
+msg = [0,0]
 for proc in psutil.process_iter():
     #get the process
     p  = psutil.Process(proc.pid)
@@ -26,7 +29,21 @@ for proc in psutil.process_iter():
                     for row in iter(pr.stdout.readline, b''):
                         output =  row.rstrip().split(' ')
                         from_port = output[2]
+                        to_port = output[1]
                         if from_port.split('.')[1] == str(n.raddr[1]):
-                            print from_port.split('.')[1]
-#                    out = p.commnicate()
-#                    print out
+#                            print from_port.split('.')[1] 
+                            msg[0] = 0
+                            msg[1] = 0
+                            for i in sock_proc:
+                                if i[0] == from_port.split('.')[1]:
+                                    msg[0] = i[0]
+                                    msg[1] = i[1]
+                            if msg[0] == 0:
+                                sock_proc[proc_count][0] = from_port.split('.')[1]
+                                sock_proc[proc_count][1] = "python"
+                                proc_count +=1
+#                                print sock_proc[proc_count]
+                            print msg
+                            print sock_proc
+
+                            
